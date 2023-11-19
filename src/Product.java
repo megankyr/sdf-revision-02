@@ -1,5 +1,4 @@
 public class Product {
-    // Product fields
     private String id;
     private String name;
     private double rating;
@@ -26,5 +25,15 @@ public class Product {
 
     public double getPrice() {
         return price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", rating=" + rating +
+                ", price=" + price +
+                '}';
     }
 }
