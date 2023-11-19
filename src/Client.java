@@ -36,12 +36,12 @@ public class Client {
             String line;
             while ((line = in.readLine()) != null) {
 
-                if (line.startsWith("request_id:")){
+                if (line.startsWith("request_id:")) {
                     id = line.substring(12);
                     System.out.println("Request id is " + id);
                 }
 
-                if (line.startsWith("item_count:")){
+                if (line.startsWith("item_count:")) {
                     count = Integer.parseInt(line.substring(12));
                     System.out.println("Item count is " + count);
                 }
@@ -54,7 +54,7 @@ public class Client {
                 if (line.equals("prod_start")) {
                     Product product = productBreakdown(in);
                     productList.add(product);
-                    if (productList.size() == count){
+                    if (productList.size() == count) {
                         break;
                     }
 
@@ -62,8 +62,8 @@ public class Client {
 
             }
 
-            Collections.sort(productList, Comparator.comparing(Product::getRating).reversed()
-                    .thenComparing(Product::getPrice).reversed());
+            Collections.sort(productList, Comparator.comparing(Product::getRating, Comparator.reverseOrder())
+            .thenComparing(Product::getPrice, Comparator.reverseOrder()));
 
             System.out.println("Sorted Products:");
             for (Product sortedProduct : productList) {
