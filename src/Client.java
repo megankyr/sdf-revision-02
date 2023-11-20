@@ -11,6 +11,7 @@ public class Client {
     public static void main(String[] args) throws Exception {
         String host;
         int port;
+
         if (args.length == 1) {
             host = "localhost";
             port = Integer.parseInt(args[0]);
@@ -29,9 +30,9 @@ public class Client {
             System.out.println("Connected to server");
 
             List<Product> productList = new ArrayList<>();
-            double budget = 0.0;
-            int count = 0;
             String id = null;
+            int count = 0;
+            double budget = 0.0;
 
             String line;
             while ((line = in.readLine()) != null) {
@@ -63,7 +64,7 @@ public class Client {
             }
 
             Collections.sort(productList, Comparator.comparing(Product::getRating, Comparator.reverseOrder())
-            .thenComparing(Product::getPrice, Comparator.reverseOrder()));
+                    .thenComparing(Product::getPrice, Comparator.reverseOrder()));
 
             System.out.println("Sorted Products:");
             for (Product sortedProduct : productList) {
@@ -73,11 +74,44 @@ public class Client {
             List<Product> selectedProducts = selectProducts(productList, budget);
 
             System.out.println("Selected Products:");
+
+            double price = 0;
+            double spent = 0;
+            double remaining = 0;
+
+            StringBuilder productIDsBuilder = new StringBuilder();
+
             for (Product selectedProduct : selectedProducts) {
                 System.out.println(selectedProduct);
+                price = selectedProduct.getPrice();
+                spent += price;
+                remaining = budget - spent;
+                productIDsBuilder.append(selectedProduct.getId()).append(", ");
+
+            }
+
+            String productIDs = productIDsBuilder.toString();
+            if (productIDs.endsWith(", ")) {
+                productIDs = productIDs.substring(0, productIDs.length() - 2);
+            }
+
+            out.println("request_id: " + id);
+            out.println("name : Koh Yan Rong Megan");
+            out.println("email: megankyr@gmail.com");
+            out.println("items: " + productIDs);
+            out.printf("spent: %.2f\n", spent);
+            out.printf("remaining: %.2f\n", remaining);
+            out.println("client_end");
+
+            String response;
+            while ((response = in.readLine()) != null){
+                if (response.equals("success") || response.equals("failed")){
+                    System.out.println(response);
+                }
             }
 
         }
+        
     }
 
     private static Product productBreakdown(BufferedReader in) throws Exception {
@@ -85,7 +119,6 @@ public class Client {
 
         String line;
         while ((line = in.readLine()) != null) {
-            System.out.println("Processing line: " + line);
 
             if (line.equals("prod_start")) {
                 continue;
@@ -93,7 +126,6 @@ public class Client {
 
             if (line.equals("prod_end")) {
                 if (id != null && name != null && rating != null && price != null) {
-                    // If all fields are present, create and return the product
                     return new Product(id, name, Double.parseDouble(rating), Double.parseDouble(price));
                 }
             }
